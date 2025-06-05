@@ -1,0 +1,798 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>K6 Performance Test Results</title>
+            <style>
+                
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --success-color: #4CAF50;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --gradient-primary: linear-gradient(135deg, #4CAF50, #45a049);
+            --gradient-secondary: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #f0f2f5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            background: var(--gradient-primary);
+            margin: -2rem -2rem 2rem -2rem;
+            padding: 2rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .metric-title {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .section h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #eee;
+            font-size: 1.75rem;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .metrics-table th,
+        .metrics-table td {
+            padding: 1.25rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .metrics-table th {
+            background: var(--gradient-secondary);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .metrics-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .metrics-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-success {
+            background: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .status-warning {
+            background: #fff3e0;
+            color: var(--warning-color);
+        }
+
+        .status-danger {
+            background: #ffebee;
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-card {
+                padding: 1.25rem;
+            }
+
+            .header {
+                margin: -1rem -1rem 1.5rem -1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Add subtle animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metric-card {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .metric-card:nth-child(1) { animation-delay: 0.1s; }
+        .metric-card:nth-child(2) { animation-delay: 0.2s; }
+        .metric-card:nth-child(3) { animation-delay: 0.3s; }
+        .metric-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .response-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-good { background: #e8f5e9; color: #2e7d32; }
+        .status-warning { background: #fff3e0; color: #f57c00; }
+        .status-critical { background: #ffebee; color: #c62828; }
+
+        @media print {
+            .container {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+            }
+            
+            .metrics-table th {
+                background: #333;
+            }
+            
+            .metrics-table tr:hover {
+                background: #2a2a2a;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .test-config-section {
+            margin-bottom: 3rem;
+            background: linear-gradient(145deg, #ffffff, #f5f7fa);
+            border: 1px solid #e1e4e8;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);  /* Changed to always show 2 columns */
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1000px;  /* Added max-width for better readability */
+            margin: 0 auto;     /* Center the grid */
+        }
+
+        .config-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;      /* Increased padding */
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .config-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .config-icon {
+            font-size: 2.5rem;  /* Increased icon size */
+            margin-bottom: 1.5rem;
+        }
+
+        .config-title {
+            color: #6c757d;
+            font-size: 1rem;    /* Slightly increased font size */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .config-value {
+            font-size: 1.3rem;  /* Increased font size */
+            font-weight: 600;
+            color: #2c3e50;
+            word-break: break-all;
+        }
+
+        .config-value.highlight {
+            color: #2196F3;
+            padding: 0.75rem 1.5rem;  /* Increased padding */
+            border-radius: 8px;
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;  /* Stack cards on small screens */
+                padding: 1rem;
+            }
+            
+            .config-card {
+                padding: 1.5rem;
+            }
+        }
+    
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                
+        <div class="header">
+            <h1>K6 Performance Test Results</h1>
+            <p>Test completed at 05/20/2025, 11:16:19</p>
+        </div>
+    
+
+        <div class="summary-grid">
+            <div class="metric-card">
+                <div class="metric-title">Total Duration</div>
+                <div class="metric-value">930s</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Virtual Users</div>
+                <div class="metric-value">5</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Success Rate</div>
+                <div class="metric-value status-warning">
+                    99.91%
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Avg Request Duration</div>
+                <div class="metric-value">203.57ms</div>
+            </div>
+        </div>
+    
+
+        <div class="section test-config-section">
+            <h2>Test Overview</h2>
+            <div class="config-grid">
+                <div class="config-card">
+                    <div class="config-icon">🌐</div>
+                    <div class="config-title">Environment</div>
+                    <div class="config-value highlight">demo</div>
+                </div>
+                <div class="config-card">
+                    <div class="config-icon">🔗</div>
+                    <div class="config-title">Base URL</div>
+                    <div class="config-value highlight">https://demo-v3-api.chairsyde.com</div>
+                </div>
+            </div>
+        </div>
+    
+
+            <div class="section">
+                <h2>Custom Metrics</h2>
+                <div class="metrics-table-container">
+                    <table class="metrics-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Total Requests</th>
+                                <th>Avg (ms)</th>
+                                <th>Min (ms)</th>
+                                <th>Med (ms)</th>
+                                <th>Max (ms)</th>
+                                <th>p(95)</th>
+                                <th>Failure Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                    <tr>
+                                        <td><strong>Csrf</strong></td>
+                                        <td>37</td>
+                                        <td>380.89</td>
+                                        <td>276.00</td>
+                                        <td>326.00</td>
+                                        <td>1110.00</td>
+                                        <td>653.60</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Login</strong></td>
+                                        <td>37</td>
+                                        <td>429.76</td>
+                                        <td>356.00</td>
+                                        <td>419.00</td>
+                                        <td>593.00</td>
+                                        <td>520.60</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Get User</strong></td>
+                                        <td>37</td>
+                                        <td>382.27</td>
+                                        <td>312.00</td>
+                                        <td>383.00</td>
+                                        <td>445.00</td>
+                                        <td>433.20</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Broadcast Auth</strong></td>
+                                        <td>37</td>
+                                        <td>210.08</td>
+                                        <td>184.00</td>
+                                        <td>209.00</td>
+                                        <td>244.00</td>
+                                        <td>233.60</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Education Conditions</strong></td>
+                                        <td>43</td>
+                                        <td>436.33</td>
+                                        <td>357.00</td>
+                                        <td>435.00</td>
+                                        <td>557.00</td>
+                                        <td>506.30</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Education Treatment</strong></td>
+                                        <td>43</td>
+                                        <td>622.95</td>
+                                        <td>488.00</td>
+                                        <td>640.00</td>
+                                        <td>873.00</td>
+                                        <td>775.20</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Education Risk</strong></td>
+                                        <td>43</td>
+                                        <td>367.33</td>
+                                        <td>288.00</td>
+                                        <td>378.00</td>
+                                        <td>468.00</td>
+                                        <td>409.70</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Education Playlist</strong></td>
+                                        <td>37</td>
+                                        <td>277.41</td>
+                                        <td>231.00</td>
+                                        <td>275.00</td>
+                                        <td>348.00</td>
+                                        <td>341.80</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Create Session</strong></td>
+                                        <td>37</td>
+                                        <td>360.62</td>
+                                        <td>276.00</td>
+                                        <td>356.00</td>
+                                        <td>533.00</td>
+                                        <td>432.00</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>S3 Response</strong></td>
+                                        <td>364</td>
+                                        <td>162.92</td>
+                                        <td>77.32</td>
+                                        <td>121.80</td>
+                                        <td>1027.31</td>
+                                        <td>436.54</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Stop1</strong></td>
+                                        <td>35</td>
+                                        <td>365.57</td>
+                                        <td>245.00</td>
+                                        <td>364.00</td>
+                                        <td>489.00</td>
+                                        <td>437.40</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Transcribe</strong></td>
+                                        <td>35</td>
+                                        <td>324.91</td>
+                                        <td>270.00</td>
+                                        <td>323.00</td>
+                                        <td>433.00</td>
+                                        <td>382.50</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td><strong>Create Title</strong></td>
+                                        <td>32</td>
+                                        <td>1713.72</td>
+                                        <td>1014.00</td>
+                                        <td>1491.50</td>
+                                        <td>3561.00</td>
+                                        <td>2776.80</td>
+                                        <td>
+                                            <span class="response-status status-good">
+                                                0.00%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+
+        <div class="section">
+            <h2>Video Playback Metrics</h2>
+            <div class="metrics-table-container">
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Total Requests</th>
+                            <th>Avg Time (ms)</th>
+                            <th>Min Time (ms)</th>
+                            <th>Max Time (ms)</th>
+                            <th>Failure Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Video Page Load</strong></td>
+                            <td>6</td>
+                            <td>65.50</td>
+                            <td>34.00</td>
+                            <td>137.00</td>
+                            <td>
+                                <span class="response-status status-good">
+                                    0.00%
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>API: education-content-view-tracking</strong></td>
+                            <td>6</td>
+                            <td>280.33</td>
+                            <td>252.00</td>
+                            <td>299.00</td>
+                            <td>
+                                <span class="response-status status-good">
+                                    0.00%
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>API: tracking/create (basic)</strong></td>
+                            <td>6</td>
+                            <td>286.86</td>
+                            <td>265.67</td>
+                            <td>306.16</td>
+                            <td>
+                                <span class="response-status status-good">
+                                    0.00%
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>API: tracking/create (with UUID)</strong></td>
+                            <td>6</td>
+                            <td>283.33</td>
+                            <td>281.00</td>
+                            <td>288.00</td>
+                            <td>
+                                <span class="response-status status-good">
+                                    0.00%
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+
+        <div class="section">
+            <h2>HTTP Metrics</h2>
+            <div class="metrics-table-container">
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Rate</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                                <tr>
+                                    <td><strong>Wait Time</strong></td>
+                                    <td>173.97 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Blocked Time</strong></td>
+                                    <td>8.48 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Receiving Time</strong></td>
+                                    <td>22.53 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Failed Rate</strong></td>
+                                    <td>-</td>
+                                    <td>0.09%</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Send Time</strong></td>
+                                    <td>7.07 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Connect Time</strong></td>
+                                    <td>2.30 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>TLS Time</strong></td>
+                                    <td>4.41 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Total Duration</strong></td>
+                                    <td>203.57 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Duration (2xx)</strong></td>
+                                    <td>203.51 ms</td>
+                                    <td>-</td>
+                                    <td>0</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>Total Requests</strong></td>
+                                    <td>-</td>
+                                    <td>226.99%</td>
+                                    <td>2111</td>
+                                </tr>
+                            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+
+        <div class="section">
+            <h2>Response Time Distribution</h2>
+            <div class="metrics-table-container">
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Percentile</th>
+                            <th>Response Time (ms)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                                <tr>
+                                    <td><strong>p(90)</strong></td>
+                                    <td>0.00</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>p(95)</strong></td>
+                                    <td>487.42</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><strong>p(99)</strong></td>
+                                    <td>1109.56</td>
+                                </tr>
+                            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+            </div>
+        </body>
+        </html>

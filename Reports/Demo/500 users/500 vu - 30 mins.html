@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consolidated K6 Performance Test Results</title>
+    <style>
+        /* Styling from the original reports */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --success-color: #4CAF50;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --gradient-primary: linear-gradient(135deg, #4CAF50, #45a049);
+            --gradient-secondary: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #f0f2f5;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            padding: 2rem;
+            color: white;
+            border-radius: var(--border-radius);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .metric-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        .metrics-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+        }
+        .metrics-table th, .metrics-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .metrics-table th {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Consolidated K6 Performance Test Results</h1>
+        </div>
+
+        <!-- Consolidated Summary -->
+        <div class="summary-grid">
+            <div class="metric-card">
+                <div class="metric-title">Total Duration</div>
+                <div class="metric-value">1830s</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Virtual Users</div>
+                <div class="metric-value">500</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Average Success Rate</div>
+                <div class="metric-value">99.16%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Avg Request Duration</div>
+                <div class="metric-value">1068.17ms</div>
+            </div>
+        </div>
+
+        <!-- Consolidated Custom Metrics -->
+        <div class="section">
+            <h2>Custom Metrics</h2>
+            <table class="metrics-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Total Requests</th>
+                        <th>Avg (ms)</th>
+                        <th>Min (ms)</th>
+                        <th>Med (ms)</th>
+                        <th>Max (ms)</th>
+                        <th>p(95)</th>
+                        <th>Failure Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Csrf</td>
+                        <td>752</td>
+                        <td>2283.13</td>
+                        <td>225.00</td>
+                        <td>1674.00</td>
+                        <td>15355.00</td>
+                        <td>6241.33</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Login</td>
+                        <td>752</td>
+                        <td>2251.12</td>
+                        <td>362.00</td>
+                        <td>1066.50</td>
+                        <td>19578.00</td>
+                        <td>7415.98</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Get User</td>
+                        <td>752</td>
+                        <td>1313.95</td>
+                        <td>292.00</td>
+                        <td>758.00</td>
+                        <td>7496.00</td>
+                        <td>4205.63</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Broadcast Auth</td>
+                        <td>752</td>
+                        <td>683.13</td>
+                        <td>149.00</td>
+                        <td>453.50</td>
+                        <td>5758.00</td>
+                        <td>2140.18</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Education Conditions</td>
+                        <td>839</td>
+                        <td>1476.16</td>
+                        <td>298.00</td>
+                        <td>854.25</td>
+                        <td>13381.00</td>
+                        <td>4901.85</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Education Treatment</td>
+                        <td>839</td>
+                        <td>1335.89</td>
+                        <td>419.00</td>
+                        <td>935.25</td>
+                        <td>9103.50</td>
+                        <td>3565.55</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Education Risk</td>
+                        <td>839</td>
+                        <td>1064.58</td>
+                        <td>275.00</td>
+                        <td>670.25</td>
+                        <td>8457.50</td>
+                        <td>3420.68</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Education Playlist</td>
+                        <td>752</td>
+                        <td>822.91</td>
+                        <td>213.00</td>
+                        <td>543.50</td>
+                        <td>8647.00</td>
+                        <td>2502.98</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Create Session</td>
+                        <td>752</td>
+                        <td>893.73</td>
+                        <td>277.00</td>
+                        <td>627.50</td>
+                        <td>6081.00</td>
+                        <td>2217.95</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>S3 Response</td>
+                        <td>10646</td>
+                        <td>1217.77</td>
+                        <td>27.40</td>
+                        <td>970.32</td>
+                        <td>12559.93</td>
+                        <td>3248.73</td>
+                        <td>0.04%</td>
+                    </tr>
+                    <tr>
+                        <td>Stop1</td>
+                        <td>329</td>
+                        <td>2782.62</td>
+                        <td>224.00</td>
+                        <td>2423.25</td>
+                        <td>10825.00</td>
+                        <td>6601.48</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Transcribe</td>
+                        <td>325</td>
+                        <td>1155.30</td>
+                        <td>261.00</td>
+                        <td>924.75</td>
+                        <td>5267.50</td>
+                        <td>3201.40</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>Create Title</td>
+                        <td>267</td>
+                        <td>4330.81</td>
+                        <td>1243.00</td>
+                        <td>3923.50</td>
+                        <td>13629.00</td>
+                        <td>8079.25</td>
+                        <td>0.00%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Consolidated HTTP Metrics -->
+        <div class="section">
+            <h2>HTTP Metrics</h2>
+            <table class="metrics-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Rate</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Wait Time</td>
+                        <td>542.71 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Blocked Time</td>
+                        <td>436.72 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Receiving Time</td>
+                        <td>326.82 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Failed Rate</td>
+                        <td>-</td>
+                        <td>0.84%</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Send Time</td>
+                        <td>198.64 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Connect Time</td>
+                        <td>116.49 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>TLS Time</td>
+                        <td>290.36 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Duration</td>
+                        <td>1068.17 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Duration (2xx)</td>
+                        <td>1069.44 ms</td>
+                        <td>-</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>Total Requests</td>
+                        <td>-</td>
+                        <td>1218.23%</td>
+                        <td>44587</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Consolidated Video Playback Metrics -->
+        <div class="section">
+            <h2>Video Playback Metrics</h2>
+            <table class="metrics-table">
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Total Requests</th>
+                        <th>Avg Time (ms)</th>
+                        <th>Min Time (ms)</th>
+                        <th>Max Time (ms)</th>
+                        <th>Failure Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Video Page Load</td>
+                        <td>87</td>
+                        <td>1003.45</td>
+                        <td>28.00</td>
+                        <td>4487.00</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>API: education-content-view-tracking</td>
+                        <td>87</td>
+                        <td>1229.20</td>
+                        <td>277.00</td>
+                        <td>6160.00</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>API: tracking/create (basic)</td>
+                        <td>87</td>
+                        <td>980.65</td>
+                        <td>270.62</td>
+                        <td>4344.66</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>API: tracking/create (with UUID)</td>
+                        <td>87</td>
+                        <td>1187.99</td>
+                        <td>213.00</td>
+                        <td>6556.50</td>
+                        <td>0.00%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

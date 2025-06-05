@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Performance Comparison</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Performance Comparison Across User Loads</h1>
+        
+        <div class="chart-container">
+            <h2>Average Response Time (ms)</h2>
+            <canvas id="avgChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>P95 Response Time (ms)</h2>
+            <canvas id="p95Chart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Data for the charts
+        const labels = [
+            'Csrf', 'Login', 'Get User', 'Broadcast Auth',
+            'Education Conditions', 'Education Treatment', 'Education Risk',
+            'Education Playlist', 'Create Session', 'S3 Response',
+            'Stop1', 'Transcribe', 'Create Title'
+        ];
+
+        const avgData = {
+            '100 Users': [781.73, 666.92, 564.77, 316.47, 642.77, 825.65, 519.51, 396.29, 486.82, 515.83, 853.17, 483.97, 1823.47],
+            '500 Users': [2283.13, 2251.12, 1313.95, 683.13, 1476.16, 1335.89, 1064.58, 822.91, 893.73, 1217.77, 2782.62, 1155.30, 4330.81],
+            '750 Users': [2977.73, 2501.20, 1634.23, 950.26, 1917.29, 1697.05, 1457.21, 1161.80, 1299.16, 1723.27, 3710.28, 1548.68, 5263.32]
+        };
+
+        const p95Data = {
+            '100 Users': [1919.20, 1386.60, 1077.30, 682.40, 1203.25, 1395.50, 1081.25, 645.20, 837.80, 1059.79, 1578.80, 813.80, 3068.80],
+            '500 Users': [6241.33, 7415.98, 4205.63, 2140.18, 4901.85, 3565.55, 3420.68, 2502.98, 2217.95, 3248.73, 6601.48, 3201.40, 8079.25],
+            '750 Users': [8067.90, 8309.65, 4968.93, 3179.90, 5791.00, 4624.05, 4567.38, 3593.63, 3990.22, 4669.80, 8711.23, 4036.90, 10335.55]
+        };
+
+        // Colors for different user loads
+        const colors = {
+            '100 Users': 'rgba(54, 162, 235, 0.8)',
+            '500 Users': 'rgba(255, 159, 64, 0.8)',
+            '750 Users': 'rgba(255, 99, 132, 0.8)'
+        };
+
+        // Create Average Response Time Chart
+        new Chart(document.getElementById('avgChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: Object.keys(avgData).map(userLoad => ({
+                    label: userLoad,
+                    data: avgData[userLoad],
+                    backgroundColor: colors[userLoad],
+                    borderColor: colors[userLoad].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Response Time (ms)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Create P95 Response Time Chart
+        new Chart(document.getElementById('p95Chart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: Object.keys(p95Data).map(userLoad => ({
+                    label: userLoad,
+                    data: p95Data[userLoad],
+                    backgroundColor: colors[userLoad],
+                    borderColor: colors[userLoad].replace('0.8', '1'),
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Response Time (ms)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
