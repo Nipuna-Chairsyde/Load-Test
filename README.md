@@ -41,7 +41,7 @@ The test suite simulates multiple virtual users performing a sequence of actions
 
 ## Prerequisites
 
-- [k6](https://k6.io/docs/getting-started/installation/) installed on your system
+- [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/) installed on your system
 - Node.js (for any additional tooling)
 - Access to the target environment (`demo` or `dev`)
 
